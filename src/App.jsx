@@ -2,9 +2,9 @@ import { useState } from "react";
 
 function App() {
   const [todos, setTodos] = useState([
-    "Lära useState",
-    "Se re-render",
-    "Exam 2 senare",
+    { id: 1, text: "Lära useState" },
+    { id: 2, text: "Se re-render" },
+    { id: 3, text: "Exam 2 senare" }
   ]);
 
   const [draft, setDraft] = useState("");
@@ -35,12 +35,13 @@ function App() {
     const text = draft.trim();
     if (text === "") 
       return;
-      setTodos([...todos, text]);
+      setTodos([...todos, 
+        { id: Date.now(), text: text }]);
       setDraft("");
 }
 
-function handleRemove(textToRemove) {
-  const kvar = todos.filter((t) => t !== textToRemove);
+function handleRemove(todoToRemove) {
+  const kvar = todos.filter((t) => t.id !== todoToRemove);
   setTodos(kvar);
 }
 /*
@@ -55,12 +56,18 @@ todos.map(function(todo) {
       <h1>Övnings-todo</h1>
       <p>Antal uppgifter: {todos.length}</p>
       <ul>
-        
-       {todos.map((t) => (
-       <li key={t}>{t}
-       <button type="button" 
-       onClick={function () { handleRemove(t); }}>Ta bort</button></li>
-       ))}
+
+       {todos
+       .filter(function (todo) {
+        return todo.text
+        .toLowerCase()
+        .includes(draft.toLowerCase());
+       })
+       .map(function (todo) {
+        return <li key={todo.id}>{todo.text}<button type="button" 
+       onClick={function () { handleRemove(todo.id); }}>Ta bort</button></li>;
+       })}
+       
        </ul>
       {/*<button type="button" onClick={addDemo}>
         Lägg till rad
@@ -86,3 +93,4 @@ todos.map(function(todo) {
 }
 
 export default App;
+
